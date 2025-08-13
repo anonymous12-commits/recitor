@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Beautiful Tasbeeh Counter</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+    
+    body {
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: white;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    h1 {
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 5px black;
+    }
+
+    .counter-box {
+        display: inline-block;
+        background-color: #111;
+        border-radius: 25px;
+        padding: 25px;
+        border: 4px solid #444;
+        box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 15px #000;
+        width: 260px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .label-row {
+        display: flex;
+        justify-content: space-around;
+        font-size: 14px;
+        margin-bottom: 5px;
+        letter-spacing: 1px;
+    }
+
+    .display {
+        background-color: #222;
+        color: #00FFCC;
+        font-family: 'Orbitron', monospace;
+        font-size: 42px;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: inset 0 0 12px #000;
+        border: 2px solid #555;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 10px;
+    }
+
+    .btn {
+        background: radial-gradient(circle at 30% 30%, silver, #777);
+        border: none;
+        border-radius: 50%;
+        width: 65px;
+        height: 65px;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 5px #333;
+        transition: all 0.2s ease;
+    }
+
+    .btn:active {
+        box-shadow: 0 2px #222;
+        transform: translateY(3px);
+    }
+
+    .timer {
+        margin-top: 10px;
+        font-size: 18px;
+        color: yellow;
+        text-shadow: 1px 1px 3px black;
+    }
+
+    select {
+        padding: 12px;
+        font-size: 16px;
+        margin-top: 20px;
+        border-radius: 8px;
+        border: none;
+        width: 260px;
+        text-align: center;
+        background-color: #fff;
+        color: black;
+        font-weight: bold;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    }
+
+    .controls {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .control-btn {
+        background-color: #00d4a6;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: black;
+        cursor: pointer;
+        box-shadow: 0 4px rgba(0,0,0,0.3);
+        transition: background 0.2s ease;
+    }
+
+    .control-btn:hover {
+        background-color: #00b88c;
+    }
+
+    .speed-box {
+        background-color: gold;
+        color: black;
+        font-weight: bold;
+        padding: 6px 14px;
+        border-radius: 6px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<h1>🕌 Tasbeeh Counter</h1>
+
+<div class="counter-box">
+    <div class="label-row">
+        <span>TALLY COUNTER</span>
+    </div>
+    <div class="display" id="counter">0 / 33</div>
+    <div class="label-row">
+        <span>COUNT</span>
+        <span>RESET</span>
+    </div>
+    <div class="buttons">
+        <button class="btn" onclick="increment()">+</button>
+        <button class="btn" onclick="resetAll()">⟲</button>
+    </div>
+    <div class="timer" id="timer">00:00</div>
+</div>
+
+<div class="controls">
+    <button class="control-btn" onclick="startTimer()">▶ Start</button>
+    <button class="control-btn" onclick="pauseTimer()">⏸ Pause</button>
+    <button class="control-btn" onclick="resumeTimer()">⏯ Resume</button>
+    <button class="control-btn" onclick="resetAll()">⟲ Reset</button>
+    <button class="control-btn" onclick="toggleNightMode()">🌙 Night Mode</button>
+    <button class="control-btn" onclick="autoPlay()">✨ Auto Play All</button>
+</div>
+
+<div class="speed-box" id="speedBox">Speed: 1×</div>
+
+<select id="duaList">
+    <option value="33">SubhanAllah (33)</option>
+    <option value="33">Alhamdulillah (33)</option>
+    <option value="34">Allahu Akbar (34)</option>
+    <option value="33">La ilaha illallah (33)</option>
+    <option value="99">La Hawla Wala Quwwata illa Billah (99)</option>
+    <option value="3000">Astaghfirullah (3000)</option>
+    <option value="3">Surah Naas (3)</option>
+    <option value="3">Surah Falaq (3)</option>
+    <option value="3">Surah Ikhlaas (3)</option>
+    <option value="99">Allahumma inni As'aluka Min Fadlika... (99)</option>
+    <option value="99">Allahumma Rabbana ajirna... (99)</option>
+    <option value="99">Allahumma ajirni minan naar (99)</option>
+    <option value="99">Allahumma inni as'alukal Jannah (99)</option>
+    <option value="99">La ilaha illa anta subhanaka... (99)</option>
+    <option value="99">Allahumma inni as'aluka husnal khatimah (99)</option>
+    <option value="99">Allahumma ajirni minan naar 2 (99)</option>
+    <option value="99">Allahumma inni as'aluka al afiyah (99)</option>
+    <option value="99">Allahumma inni as'aluka al akhirah (99)</option>
+    <option value="99">Allahumma inni as'aluka al afwa wal afiyah (99)</option>
+</select>
+
+<script>
+let count = 0;
+let target = 33;
+let timerInterval;
+let totalSeconds = 0;
+let autoPlayInterval;
+let speed = 1;
+
+const speedSteps = [
+    0.1, 0.2, 0.3, 0.4, 0.5,
+    0.6, 0.7, 0.8, 0.9, 1.0,
+    1.1, 1.2, 1.3, 1.4, 1.5,
+    2.0, 2.5, 3.0
+];
+let speedIndex = 9; // start at 1×
+
+document.getElementById("duaList").addEventListener("change", function() {
+    target = parseInt(this.value);
+    count = 0;
+    updateCounter();
+    resetTimer();
+});
+
+document.getElementById("speedBox").addEventListener("click", () => {
+    speedIndex++;
+    if (speedIndex >= speedSteps.length) {
+        speedIndex = 0;
+    }
+    speed = speedSteps[speedIndex];
+    document.getElementById("speedBox").innerText = `Speed: ${speed}×`;
+
+    if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = setInterval(() => {
+            increment();
+            if (count >= target) clearInterval(autoPlayInterval);
+        }, 1000 / speed);
+    }
+});
+
+function updateCounter() {
+    document.getElementById("counter").textContent = count + " / " + target;
+}
+
+function increment() {
+    if (count < target) {
+        count++;
+        updateCounter();
+        if (count === 1) startTimer(); 
+    }
+}
+
+function resetAll() {
+    count = 0;
+    updateCounter();
+    resetTimer();
+    clearInterval(autoPlayInterval);
+}
+
+function startTimer() {
+    totalSeconds = 0;
+    clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+}
+
+function resumeTimer() {
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+    document.getElementById("timer").textContent = "00:00";
+}
+
+function updateTimer() {
+    totalSeconds++;
+    let minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+    let seconds = String(totalSeconds % 60).padStart(2, '0');
+    document.getElementById("timer").textContent = minutes + ":" + seconds;
+}
+
+function toggleNightMode() {
+    document.body.style.background = document.body.style.background.includes('black') ?
+        'linear-gradient(135deg, #0f2027, #203a43, #2c5364)' : 'black';
+}
+
+function autoPlay() {
+    clearInterval(autoPlayInterval);
+    autoPlayInterval = setInterval(() => {
+        increment();
+        if (count >= target) clearInterval(autoPlayInterval);
+    }, 1000 / speed);
+}
+</script>
+
+</body>
+</html>
